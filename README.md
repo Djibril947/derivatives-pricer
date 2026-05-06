@@ -52,6 +52,25 @@ The backtest demonstrates that discrete daily rebalancing generates a non-zero P
 - Basis risk between implied volatility (σ = 20%) and realised volatility
 - Unhedged gamma exposure between rebalancing dates
 
+### 3. Longstaff-Schwartz — American Put Pricer (`longstaff_schwartz.py`)
+
+Pricing of American put options via Monte-Carlo simulation and least-squares regression.
+
+**Methodology**
+- Simulate 10,000 paths of the underlying (GBM) across 50 exercise dates
+- Backward induction from maturity to t=0
+- Least-squares regression (degree 2) to estimate continuation value at each exercise date
+- Optimal exercise rule: exercise if immediate payoff > continuation value
+
+**Key results**
+- American put (Longstaff-Schwartz) : 12.08
+- European put (BSM benchmark)      : 10.68
+- Early exercise premium             : +1.40 (+13%)
+
+**Visualisation**
+- Simulated paths with optimal early exercise points
+- Payoff distribution — American vs European benchmark
+
 ---
 
 ## Stack
