@@ -80,9 +80,9 @@ Pricing of American put options via Monte-Carlo simulation and least-squares reg
 ```bash
 python "Black scholes.py"
 python hedging.py
+python longstaff_schwartz.py
 ```
 
 ## Author
 
 Djibril DRAME — M1 Grande École, Grenoble Ecole de Management  
-Self-directed training in quantitative finance & derivatives
