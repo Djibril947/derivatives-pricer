@@ -1,6 +1,8 @@
 # Derivatives Pricer — Python
 
-Black-Scholes pricing, Greeks, Monte-Carlo simulation and delta-hedging backtest on real S&P 500 data.
+# Derivatives Pricer — Python
+
+Black-Scholes pricing, Greeks, Monte-Carlo simulation, delta-hedging backtest on real S&P 500 data, American option pricing via Longstaff-Schwartz, and a Monte Carlo autocall pricer.
 
 Built as part of an independent quantitative finance self-study programme alongside the DerivativesFinance training platform and *Options, Futures & Other Derivatives* (J.C. Hull).
 
@@ -52,6 +54,8 @@ The backtest demonstrates that discrete daily rebalancing generates a non-zero P
 - Basis risk between implied volatility (σ = 20%) and realised volatility
 - Unhedged gamma exposure between rebalancing dates
 
+---
+
 ### 3. Longstaff-Schwartz — American Put Pricer (`longstaff_schwartz.py`)
 
 Pricing of American put options via Monte-Carlo simulation and least-squares regression.
@@ -73,16 +77,84 @@ Pricing of American put options via Monte-Carlo simulation and least-squares reg
 
 ---
 
+### 4. Autocall Pricer (`autocall.py`)
+
+Monte Carlo pricer for a Phoenix Autocall structured product.
+
+**Context**
+
+A Phoenix Autocall pays a conditional coupon as long as the underlying
+stays above a coupon barrier, and is automatically redeemed early
+(called) if the underlying exceeds a call barrier on an observation
+date. In case of a significant decline at maturity (below the
+protection barrier), capital is no longer guaranteed.
+
+**Product structure**
+
+At each observation date:
+1. **Coupon test**: if `S >= coupon barrier` -> coupon payment (with
+   memory effect for missed coupons)
+2. **Call test**: if `S >= call barrier` -> early redemption (notional
+   + coupon + memorized coupons)
+
+At maturity, if never called:
+- `S_T >= protection barrier` -> capital guaranteed at 100%
+- `S_T < protection barrier` -> capital loss proportional to the
+  decline (`S_T / S0`)
+
+**Methodology**
+- Monte Carlo simulation under the risk-neutral measure (GBM)
+- Exact discretization scheme (log-Euler, no bias)
+- Variance reduction via antithetic variates
+- Path-by-path discounting (each path has its own exit date)
+
+This product is path-dependent (coupon memory, early call), so no
+closed-form formula exists for it — hence the choice of Monte Carlo.
+
+**Key results**
+
+With S0=100, r=3%, vol=20%, T=3 years, 12 quarterly observation dates,
+call barrier 100%, coupon barrier 70%, protection barrier 60%,
+100,000 simulated paths:
+
+- Price (% of notional) = **101.45%** (95% CI ≈ ±0.07%)
+
+Coupon sensitivity (consistency check — price increases strictly with
+the offered coupon):
+
+| Quarterly coupon | Price |
+|---|---|
+| 1% | 98.60% |
+| 2% | 101.45% |
+| 3% | 104.30% |
+| 4% | 107.15% |
+
+---
+
 ## Stack
+
+- **Python 3** — core language
+- **NumPy** — vectorized computation, Monte-Carlo simulation, least-squares regression (Longstaff-Schwartz)
+- **pandas** — time series handling (hedging backtest)
+- **SciPy** (`scipy.stats.norm`) — Black-Scholes closed-form pricing & Greeks
+- **yfinance** — historical S&P 500 data download
+- **Matplotlib** — path visualization, convergence plots, P&L charts
 
 ## Run
 
-```bash
+\`\`\`bash
 python "Black scholes.py"
 python hedging.py
 python longstaff_schwartz.py
-```
+python autocall.py
+\`\`\`
+
+## Possible improvements (Autocall)
+
+- Greeks (Delta, Vega) via finite differences
+- Step-down call barrier
+- Comparison with an Athena Autocall (no coupon memory)
 
 ## Author
 
-Djibril DRAME — M1 Grande École, Grenoble Ecole de Management  
+Djibril DRAME — M1 Grande École, Grenoble Ecole de Management
