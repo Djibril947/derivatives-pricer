@@ -37,6 +37,8 @@ Full implementation of the Black-Scholes-Merton model for European options.
 - European option pricing via discounted average payoff
 - Convergence analysis: MC price vs closed-form BSM across 10 to 50,000 simulations
 
+![Monte Carlo simulated paths](Figure_2.png)
+![Monte Carlo convergence to Black-Scholes](Figure_3.png)
 ---
 
 ### 2. Delta-Hedging Backtest (`hedging.py`)
@@ -53,6 +55,7 @@ Dynamic delta-hedging simulation on real S&P 500 data (2023).
 The backtest demonstrates that discrete daily rebalancing generates a non-zero P&L due to:
 - Basis risk between implied volatility (σ = 20%) and realised volatility
 - Unhedged gamma exposure between rebalancing dates
+![Delta-hedging cumulative P&L](Figure_4.png)
 
 ---
 
@@ -75,6 +78,7 @@ Pricing of American put options via Monte-Carlo simulation and least-squares reg
 - Simulated paths with optimal early exercise points
 - Payoff distribution — American vs European benchmark
 
+![Simulated paths with early exercise points](Figure_1.png)
 ---
 
 ### 4. Autocall Pricer (`autocall.py`)
