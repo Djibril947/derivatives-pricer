@@ -1,6 +1,6 @@
 Note: Windows may block macros in downloaded files. Right-click the .xlsm file,
 choose Properties, tick "Unblock", then reopen it. The full code is also readable
-in BlackScholes_v4.bas.
+in BlackScholes_v3.bas.
 
 # Black-Scholes Pricer in VBA
 
