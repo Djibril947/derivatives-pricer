@@ -1,8 +1,8 @@
-# Black-Scholes Pricer in VBA
-
 Note: Windows may block macros in downloaded files. Right-click the .xlsm file,
 choose Properties, tick "Unblock", then reopen it. The full code is also readable
 in BlackScholes_v4.bas.
+
+# Black-Scholes Pricer in VBA
 
 A European option pricer (call and put) in Excel VBA: prices, Greeks (including Vanna and Volga) and implied volatility via Newton-Raphson. The functions work directly in cells, like native Excel formulas.
 
