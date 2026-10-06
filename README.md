@@ -1,4 +1,4 @@
-# Derivatives Pricer — Python
+A VBA/Excel version of the pricer is available: see [README Black Scholes VBA](README%20Black%20Scholes%20VBA.md).
 
 # Derivatives Pricer — Python
 
