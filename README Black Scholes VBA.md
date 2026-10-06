@@ -57,6 +57,8 @@ The functions reject `S`, `K`, `T` or `sigma` less than or equal to 0 and return
 **Helper functions:** `BS_N` (cumulative normal), `BS_Phi` (normal density), `BS_D1`, `BS_D2`. Input validation is written once in `BS_D1`, and every other function relies on it.
 
 **Interface:** the `Calculer_VolImplicite` macro reads the market price (`B8`) and the option type Call/Put (`B9`) from the sheet, then writes the implied volatility to `B10`. An error message appears if the price is out of bounds.
+The button macro (`Calculer_VolImplicite`) is stored in the Excel workbook (Module2).
+The .bas file contains the pricing, Greeks and implied volatility functions.
 
 ## Conventions
 
