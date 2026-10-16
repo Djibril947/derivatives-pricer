@@ -1,4 +1,4 @@
-# importation des bibliotèques nécessairee
+# importation des bibliotèques nécessaires
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
