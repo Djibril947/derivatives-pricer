@@ -121,7 +121,7 @@ With S0=100, r=3%, vol=20%, T=3 years, 12 quarterly observation dates,
 call barrier 100%, coupon barrier 70%, protection barrier 60%,
 100,000 simulated paths:
 
-- Price (% of notional) = **101.45%** (95% CI ≈ ±0.07%)
+- Price (% of notional) = **101.95%** (95% CI ≈ ±0.07%)
 
 Coupon sensitivity (consistency check — price increases strictly with
 the offered coupon):
