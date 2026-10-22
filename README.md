@@ -83,81 +83,62 @@ Pricing of American put options via Monte-Carlo simulation and least-squares reg
 
 ### 4. Autocall Pricer (`autocall.py`)
 
-Monte Carlo pricer for a Phoenix Autocall structured product.
+Monte Carlo pricer for a Phoenix Autocall structured product (without coupon memory).
 
-**Context**
+### Context
+A Phoenix Autocall pays a conditional coupon as long as the underlying stays above a
+coupon barrier, and is automatically redeemed early (called) if the underlying is above
+a call barrier on an observation date. In case of a significant decline at maturity
+(below the protection barrier), capital is no longer guaranteed.
 
-A Phoenix Autocall pays a conditional coupon as long as the underlying
-stays above a coupon barrier, and is automatically redeemed early
-(called) if the underlying exceeds a call barrier on an observation
-date. In case of a significant decline at maturity (below the
-protection barrier), capital is no longer guaranteed.
-
-**Product structure**
-
+### Product structure
 At each observation date:
-1. **Coupon test**: if `S >= coupon barrier` -> coupon payment (with
-   memory effect for missed coupons)
-2. **Call test**: if `S >= call barrier` -> early redemption (notional
-   + coupon + memorized coupons)
+- **Coupon test**: if S >= coupon barrier -> coupon paid on that date (a missed coupon is not recovered)
+- **Call test**: if S >= call barrier -> early redemption (notional returned, product stops)
 
 At maturity, if never called:
-- `S_T >= protection barrier` -> capital guaranteed at 100%
-- `S_T < protection barrier` -> capital loss proportional to the
-  decline (`S_T / S0`)
+- S_T >= protection barrier -> capital returned at 100%
+- S_T <  protection barrier -> capital loss proportional to the decline (S_T / S0)
 
-**Methodology**
+### Methodology
 - Monte Carlo simulation under the risk-neutral measure (GBM)
-- Exact discretization scheme (log-Euler, no bias)
+- Exact discretization of the GBM (no discretization bias)
 - Variance reduction via antithetic variates
-- Path-by-path discounting (each path has its own exit date)
+- Cash-flow-by-cash-flow discounting: each coupon is discounted from its own payment date,
+  and the notional from its redemption date (early call or maturity)
 
-This product is path-dependent (coupon memory, early call), so no
-closed-form formula exists for it — hence the choice of Monte Carlo.
+This product is path-dependent (early call, barrier tests at each date), so no closed-form
+formula exists for it, hence the choice of Monte Carlo.
 
-**Key results**
+### Assumptions
+Constant volatility and risk-free rate, no dividends (q = 0), no volatility skew
+(Black-Scholes model).
 
-With S0=100, r=3%, vol=20%, T=3 years, 12 quarterly observation dates,
-call barrier 100%, coupon barrier 70%, protection barrier 60%,
-100,000 simulated paths:
+### Key results
+With S0=100, r=3%, vol=20%, T=3 years, 12 quarterly observation dates, call barrier 100%,
+coupon barrier 70%, protection barrier 60%, 100,000 simulated paths:
 
-- Price (% of notional) = **101.95%** (95% CI ≈ ±0.07%)
+**Price = 101.95% of notional (95% CI ≈ ±0.06%)**
 
-Coupon sensitivity (consistency check — price increases strictly with
-the offered coupon):
+Coupon sensitivity (the price increases with the coupon offered):
 
-| Quarterly coupon | Price |
-|---|---|
-| 1% | 98.60% |
-| 2% | 101.45% |
-| 3% | 104.30% |
-| 4% | 107.15% |
+| Quarterly coupon | Price   |
+|------------------|---------|
+| 1%               | 98.85%  |
+| 2%               | 101.95% |
+| 3%               | 105.05% |
+| 4%               | 108.15% |
 
----
+### Validation
+With vol -> 0, the underlying follows its forward and is called at the first observation:
+the price converges to (1 + coupon) x exp(-r x 0.25), e.g. 101.24% for a 2% coupon.
 
-## Stack
-
-- **Python 3** — core language
-- **NumPy** — vectorized computation, Monte-Carlo simulation, least-squares regression (Longstaff-Schwartz)
-- **pandas** — time series handling (hedging backtest)
-- **SciPy** (`scipy.stats.norm`) — Black-Scholes closed-form pricing & Greeks
-- **yfinance** — historical S&P 500 data download
-- **Matplotlib** — path visualization, convergence plots, P&L charts
-
-## Run
-
-\`\`\`bash
-python "Black scholes.py"
-python hedging.py
-python longstaff_schwartz.py
-python autocall.py
-\`\`\`
-
-## Possible improvements (Autocall)
-
+### Possible improvements
+- Coupon memory effect (Phoenix with memory)
 - Greeks (Delta, Vega) via finite differences
 - Step-down call barrier
-- Comparison with an Athena Autocall (no coupon memory)
+- Comparison with an Athena autocall (coupon accrued and paid only at redemption)
+- Solver for the coupon that makes the product worth par (100%)
 
 ## Author
 
